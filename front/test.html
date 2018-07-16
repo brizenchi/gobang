@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>五子棋</title>
+        <meta charset="utf-8">
+        <meta name="referrer" content="no-referrer"/>
+        
+        <style type="text/css">
+            body{
+                margin: 0;
+            }
+            .chess-manual{
+                height: 240px;
+                margin: auto;
+                margin-top: 10vh;
+                position: relative;
+                width: 320px;
+                background: beige;
+            }
+            .row{
+                display: flex;
+                margin: auto;
+                position: absolute;
+                left: 7px;
+            }
+            .list{
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                margin-right: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .bt{
+                border-top: 1px solid;
+            }
+            .br{
+                border-right: 1px solid;
+            }
+            .bl{
+                border-left: 1px solid;
+            }
+            .bb{
+                border-bottom: 1px solid;
+            }
+            .circle{
+                width: 26px;
+                height: 26px;
+                border-radius: 15px;
+            }
+        </style>
+    </head>
+    <body>
+
+    <!--<div class="close" onclick="closeWindow()"></div>-->
+    <!--<div class="minimize" onclick="miniWindow()"></div>-->
+
+        <div class="chess-manual" data-wrapper>
+            <div draggable=true>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+        </div>
+
+    </body>
+   
+</html>

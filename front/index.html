@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>五子棋</title>
+        <meta charset="utf-8">
+        <meta name="referrer" content="no-referrer"/>
+        
+        <style type="text/css">
+            body{
+                margin: 0;
+            }
+            .chess-manual{
+                margin: auto;
+                margin-top: 10vh;
+                width: 535px;
+                height: 535px;
+                background-image: url(images/board.jpg);
+                position: relative;
+            }
+            .row{
+                display: flex;
+                margin: auto;
+                position: absolute;
+                left: 7px;
+            }
+            .list{
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                margin-right: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .bt{
+                border-top: 1px solid;
+            }
+            .br{
+                border-right: 1px solid;
+            }
+            .bl{
+                border-left: 1px solid;
+            }
+            .bb{
+                border-bottom: 1px solid;
+            }
+            .circle{
+                width: 26px;
+                height: 26px;
+                border-radius: 15px;
+            }
+        </style>
+    </head>
+    <body>
+
+    <!--<div class="close" onclick="closeWindow()"></div>-->
+    <!--<div class="minimize" onclick="miniWindow()"></div>-->
+
+        <div class="chess-manual" data-wrapper></div>
+
+    </body>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            
+        })
+        //常量
+        const rowClassName = "row";
+        const listClassName = "list";
+        const size = 15; //15 * 15
+        const width = 30;
+        const gap = 5;
+        const playOneColor = "black";
+        const playTwoColor = "white";
+        const getColor = {
+            true: playOneColor,
+            false: playTwoColor,
+        }
+
+        //game必须的变量
+        let isPlayOne = true;
+        //初始化棋盘 没有棋的地方是0，playOne下的是1，playTwo下的是2
+        const position = [];
+        for (let i = 0; i < 15; i++) {
+            position[i] = new Array();
+            for (let j = 0; j < 15; j++) {
+                position[i].push(0);
+            }
+        }
+
+        $(() => {
+            //初始化棋盘
+            init();
+        })
+        
+        init = () => {
+            let chessManual = "";
+            for (let i = 0; i < size; i++) {
+                chessManual += "<div style='top:" + (7 + (gap + width) * i) + "px' class='" + rowClassName +"' data-row-" + i +">";
+                for (let j = 0; j < size; j++) {
+                    chessManual += "<div class='" + listClassName + "' data-row-" + i + "-list-" + j 
+                        + " onClick='onClick(" + i + "," + j + ")'></div>";
+                }
+                chessManual += "</div>";
+            }
+            $("[data-wrapper]").html(chessManual)
+        }
+
+        reset = () => {
+            
+        }
+        
+        //判断胜利
+        judge = (i, j) => {
+            //判断该位置与周围是否能连成5个
+            const player = position[i][j];
+            //加上当前的棋子
+            let row = 1;
+            let list = 1;
+            let yex = 1; //y = x 曲线
+            let yenx = 1;//y = -x 曲线
+            //纵向
+            let tempRow = i;
+            while (true) {
+                tempRow--;
+                if (tempRow >= 0 && position[tempRow][j] == player) {
+                    row++;
+                } else {
+                    break;
+                }
+            }
+            tempRow = i;
+            while (true) {
+                tempRow++;
+                if (tempRow < 15 && position[tempRow][j] == player) {
+                    row++;
+                } else {
+                    break;
+                }
+            }
+            //横向
+            let tempList = j;
+            while (true) {
+                tempList--;
+                if (tempList >= 0 && position[i][tempList] == player) {
+                    list++;
+                } else {
+                    break;
+                }
+            }
+            tempList = j;
+            while (true) {
+                tempList++;
+                if (tempList < 15 && position[i][tempList] == player) {
+                    list++;
+                } else {
+                    break;
+                }
+            }
+            //y = x 曲线
+            tempRow = i;
+            tempList = j;
+            while (true) {
+                tempList--;
+                tempRow++;
+                if (tempList >= 0 && tempRow < 15 && position[tempRow][tempList] == player) {
+                    yex++;
+                } else {
+                    break;
+                }
+            }
+            tempRow = i;
+            tempList = j;
+            while (true) {
+                tempRow--;
+                tempList++;
+                if (tempRow >= 0 && tempList < 15 && position[tempRow][tempList] == player) {
+                    yex++;
+                } else {
+                    break;
+                }
+            }
+            //y = -x
+            tempRow = i;
+            tempList = j;
+            while (true) {
+                tempRow++;
+                tempList++;
+                if (tempList < 15 && tempRow < 15 && position[tempRow][tempList] == player) {
+                    yenx++;
+                } else {
+                    break;
+                }
+            }
+            tempRow = i;
+            tempList = j;
+            while (true) {
+                tempList--;
+                tempRow--;
+                if (tempRow >= 0 && tempList >= 0 && position[tempRow][tempList] == player) {
+                    yenx++;
+                } else {
+                    break;
+                }
+            }
+            if (row == 5 || list == 5 || yex == 5 || yenx == 5) {
+                console.log(((player == 1) ? "playone" : "playTwo"),"win")
+            }
+        }
+            
+        const flag = true;
+        onClick = (i, j) => {
+            //防止多次点击覆盖原来的颜色
+            if (position[i][j] == 0) {
+                position[i][j] = isPlayOne ? 1 : 2;
+                $("[data-row-" + i + "-list-" + j + "]").html("<div class='circle' style='background:" + getColor[isPlayOne] + "'></div>");
+                judge(i, j);
+                isPlayOne = !isPlayOne;
+                if (flag) {
+                    //获取位置
+                    // onClick(0,0);
+                    
+                } else {
+                    flag = true;
+                }
+            }
+        }
+
+    </script>
+</html>
+根据该值判定位置
+成5：即构成五子连珠
+活4：即构成两边均不被拦截的四子连珠。
+单死4：一边被拦截的四子连珠
+双死4：两边被拦截的四子连珠
+活3：两边均不被拦截的三字连珠
+单死3：一边被拦截的三字连珠
+双死3：两边被拦截的三字连珠
+活2：两边均不被拦截的二子连珠
+单死2：一边被拦截的二子连珠
+双死2：两边被拦截的二子连珠
+单子：四周无相连棋子
+死1
